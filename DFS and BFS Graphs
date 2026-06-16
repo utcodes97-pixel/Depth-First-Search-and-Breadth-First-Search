@@ -1,0 +1,63 @@
+class Solution {
+private:
+    void dfs(int node, vector<vector<int>>& adj,
+             vector<int>& vis, vector<int>& ans) {
+
+        vis[node] = 1;
+        ans.push_back(node);
+
+        for (auto it : adj[node]) {
+            if (!vis[it]) {
+                dfs(it, adj, vis, ans);
+            }
+        }
+    }
+
+public:
+    vector<int> dfsOfGraph(int V, vector<vector<int>> edges) {
+
+        vector<vector<int>> adj(V);
+
+        for (auto e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]); // undirected
+        }
+
+        vector<int> vis(V, 0), ans;
+        dfs(0, adj, vis, ans);
+
+        return ans;
+    }
+
+    vector<int> bfsOfGraph(int V, vector<vector<int>> edges) {
+
+        vector<vector<int>> adj(V);
+
+        for (auto e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+
+        vector<int> vis(V, 0), bfs;
+        queue<int> q;
+
+        q.push(0);
+        vis[0] = 1;
+
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+
+            bfs.push_back(node);
+
+            for (auto it : adj[node]) {
+                if (!vis[it]) {
+                    vis[it] = 1;
+                    q.push(it);
+                }
+            }
+        }
+
+        return bfs;
+    }
+};
