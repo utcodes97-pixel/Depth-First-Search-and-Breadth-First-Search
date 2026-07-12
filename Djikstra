@@ -40,3 +40,46 @@ vector<int> dijkstra(int V, vector<vector<pair<int,int>>>& adj, int src)
 
     return dist;
 }
+
+USING SET
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> dijkstra(int V, vector<vector<pair<int,int>>>& adj, int src)
+{
+    vector<int> dist(V, INT_MAX);
+
+    // {distance, node}
+    set<pair<int,int>> st;
+
+    dist[src] = 0;
+    st.insert({0, src});
+
+    while (!st.empty())
+    {
+        auto it = *st.begin();
+        st.erase(st.begin());
+
+        int d = it.first;
+        int node = it.second;
+
+        for (auto edge : adj[node])
+        {
+            int neigh = edge.first;
+            int wt = edge.second;
+
+            if (dist[node] + wt < dist[neigh])
+            {
+                // Remove old distance if it exists
+                if (dist[neigh] != INT_MAX)
+                    st.erase({dist[neigh], neigh});
+
+                dist[neigh] = dist[node] + wt;
+                st.insert({dist[neigh], neigh});
+            }
+        }
+    }
+
+    return dist;
+}
