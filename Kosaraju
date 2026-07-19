@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+class Solution {
+public:
+    vector<vector<int>> scc;
+    void dfs(int node, vector<int>& visited, vector<int> adj[], stack<int>& st) {
+        visited[node] = 1;
+        for (auto nei : adj[node]) {
+            if (!visited[nei])
+                dfs(nei, visited, adj, st);
+        }
+        st.push(node);
+    }
+    void dfs2(int node, vector<int>& visited, vector<int> adjT[],
+              vector<int>& curr) {
+        visited[node] = 1;
+        curr.push_back(node);
+        for (auto nei : adjT[node]) {
+            if (!visited[nei])
+                dfs2(nei, visited, adjT, curr);
+        }
+    }
+    int Kosaraju(int V, vector<int> adj[]) {
+        // Step 1: Store vertices in order of finishing time
+        stack<int> st;
+        vector<int> visited(V, 0);
+        for (int i = 0; i < V; i++) {
+            if (!visited[i])
+                dfs(i, visited, adj, st);
+        }
+        // Step 2: Reverse the graph
+        vector<int> adjT[V];
+        fill(visited.begin(), visited.end(), 0);
+        for (int i = 0; i < V; i++) {
+            for (auto nei : adj[i]) {
+                adjT[nei].push_back(i);
+            }
+        }
+        // Step 3: DFS on reversed graph
+        while (!st.empty()) {
+            int node = st.top();
+            st.pop();
+            if (!visited[node]) {
+                vector<int> curr;
+                dfs2(node, visited, adjT, curr);
+                scc.push_back(curr);
+            }
+        }
+        return scc.size();
+    }
+};
