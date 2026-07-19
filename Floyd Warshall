@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+
+    int V, E;
+    cin >> V >> E;
+
+    const int INF = 1e8;
+
+    // Initialize adjacency matrix
+    vector<vector<int>> dist(V, vector<int>(V, INF));
+
+    // Distance from every node to itself is 0
+    for (int i = 0; i < V; i++) {
+        dist[i][i] = 0;
+    }
+
+    // Read edges
+    for (int i = 0; i < E; i++) {
+        int u, v, wt;
+        cin >> u >> v >> wt;
+
+        dist[u][v] = wt;
+
+        // Uncomment for an undirected graph
+        // dist[v][u] = wt;
+    }
+
+    // Floyd-Warshall
+    for (int via = 0; via < V; via++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+
+                if (dist[i][via] != INF &&
+                    dist[via][j] != INF) {
+
+                    dist[i][j] = min(dist[i][j],
+                                     dist[i][via] + dist[via][j]);
+                }
+            }
+        }
+    }
+
+    // Negative cycle detection
+    bool negCycle = false;
+
+    for (int i = 0; i < V; i++) {
+        if (dist[i][i] < 0) {
+            negCycle = true;
+            break;
+        }
+    }
+
+    if (negCycle) {
+        cout << "Negative Weight Cycle Exists\n";
+    } else {
+        cout << "Shortest Distance Matrix:\n";
+
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+
+                if (dist[i][j] == INF)
+                    cout << "INF ";
+                else
+                    cout << dist[i][j] << " ";
+            }
+            cout << '\n';
+        }
+    }
+
+    return 0;
+}
